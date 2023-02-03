@@ -2,8 +2,10 @@ import msprime
 from matplotlib import pyplot as plt
 import numpy as np
 import argparse
+
 Ne=1e4
 L=1e6
+
 
 parser = argparse.ArgumentParser(
                     prog = 'hardSweepEg.py',
@@ -62,15 +64,18 @@ def wind_diversity(L,num_reps,reps, mutation_rate):
         diversity[j] = ts.diversity(windows=wins, mode="site")
     return mids, diversity
 
-def plot(mids,diversity,Ne, mutation_rate):
-    plt.plot(mids, diversity.mean(axis=0), label="Simulations")
-    plt.axhline(4 * Ne*mutation_rate, linestyle=":", label=r'Neutral expectation')
-    plt.ylabel(r'Site $\pi$');
-    plt.xlabel('Position (bp)')
-    plt.ylim(ymin=0)
-    plt.legend();
+# def plot(mids,diversity,Ne, mutation_rate):
+#     plt.plot(mids, diversity.mean(axis=0), label="Simulations")
+#     plt.axhline(4 * Ne*mutation_rate, linestyle=":", label=r'Neutral expectation')
+#     plt.ylabel(r'Site $\pi$');
+#     plt.xlabel('Position (bp)')
+#     plt.ylim(ymin=0)
+#     plt.legend();
 
 sweep_model=sweep_model(L,Ne)
 reps=rep_sim(sweep_model,Ne,L,num_reps)
 mids, diversity=wind_diversity(L,num_reps,reps,mutation_rate)
-plot(mids,diversity,Ne,mutation_rate)
+#plot(mids,diversity,Ne,mutation_rate)
+with open('msprime_data.npy', 'wb') as f:
+    np.save(f, diversity)
+    

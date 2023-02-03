@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
+import argparse
 
 #loading data file and parsing line by line creating a list of mutations and a list of positions 
 spl =[] #mutation list 
@@ -7,7 +8,15 @@ pos=[] #position list
 #n=5
 #rep=100
 
-with open("discoal_default.txt") as f:
+parser = argparse.ArgumentParser(
+                    prog = 'discoal_data.py',
+                    description = 'plot hardsweep data to compare with msprime',
+                    epilog = '-txt')
+parser.add_argument('-txt', type=str, default="discoal_default.txt")
+args=parser.parse_args()
+file=args.txt
+
+with open(file) as f:
     L=f.readline()
     param=L.split()
     n=int(param[1])
@@ -96,7 +105,7 @@ x=[i for i in range(1,12)]
 win_avg=np.average(win_het,axis=0)
 
 #print(win_avg)
-plt.plot(x,win_avg, marker='o')
+#plt.plot(x,win_avg, marker='o')
 
 win_box=[]
 for i in range(len(win_het[0])):
@@ -105,10 +114,12 @@ for i in range(len(win_het[0])):
         temp.append(win_het[j][i])
     win_box.append(temp)
                    
+positions=range(1,len(win_box)+1)               
                    
-                   
-plt.boxplot(win_box, positions=range(1,len(win_box)+1))
+#plt.boxplot(win_box, positions)
 #plt.errorbar(x, win_avg, linestyle='None', marker='^')
 
+with open('discoal_data.npy', 'wb') as f:
+    np.save(f, win_avg, allow_pickle=True)
 
 
